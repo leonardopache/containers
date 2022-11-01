@@ -1,0 +1,45 @@
+###################################
+Some helpful commands
+- open wine popup, a GUI configuration tool for Wine $> winecfg 
+- open windows explore $> wine explorer.exe
+- open ie $> wine iexplorer.exe 
+- little app to keep the container running $> docker exec -it <CONTAINNERID> python3 -c  "while 1: import time; print(time.strftime('%I:%M:%S %p', time.localtime())); time.sleep(10);"
+- little bash script to keep container running $> docker exec -it <CONTAINNERID> while :; do echo 'Hit CTRL+C'; sleep 1; done
+- restart on container keeping the previous information `--attach` and `--interactive` $>docker start -ai <CONTAINNERID>
+
+
+################################### 
+MT5
+mt5.initialize(login=int(''),server='',password='')
+mt5.initialize(login=int(''),
+                server='',
+                password='', 
+                path='C:\\mt5\\terminal64.exe', 
+                portable=True)
+
+
+###################################
+V1.0
+- Wine7(win10) + Xserver + VNC  + MT5
+- docker start -ai <CONTAINNERID>
+
+###################################
+V1.3
+- Wine7(win10) + Xserver + VNC  + MT5 + Python
+
+###################################
+V2.0
+- docker build -f Dockerfile-mt5-w64 -t mt5/ubuntuwine:2.0 .
+- docker run -it --env-file=.env -v /tmp/screens:/tmp/screenshots -v /Volumes/lpache/MetaTrader5:/home/winer/.wine/drive_c/users/winer/AppData/Local/Programs/mt5 -v /Volumes/lpache/git/algo-trading:/home/winer/git/algo-trade -p 5901:5900 mt5/ubuntuwine:2.0
+- docker exec -it <CONTAINNERID>  /docker/run_vnc.sh
+
+only works with:
+
+- open MT5 before run python
+- docker exec -it <CONTAINNERID> /docker/run_mt5.sh
+- configure Algo trading and dll -- keep mt5 open
+- run python App
+- cd ~/git/algo-trade/
+- wine64 $PY_HOME/Python39/Scripts/pip3.exe install --no-warn-script-location -r ~/git/algo-trade/knights-zodiac/requirements.txt
+- wine64 $PY_HOME/Python39/python.exe ~/git/algo-trade/knights-zodiac/main.py
+
