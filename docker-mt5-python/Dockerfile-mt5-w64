@@ -110,6 +110,12 @@ RUN set -ex; \
 RUN xvfb-run wine64 /tmp/python-3.9.9-amd64.exe /q;\
     /docker/waitonprocess.sh wineserver;
 
+RUN xvfb-run wine64 msiexec /i /usr/share/wine/gecko/wine_gecko-${WINE_GECKO_VERSION}-x86_64.msi \
+    /docker/waitonprocess.sh wineserver;
+
+RUN xvfb-run wine64 msiexec /i /usr/share/wine/mono/wine-mono-${WINE_MONO_VERSION}-x86.msi  \
+    /docker/waitonprocess.sh wineserver;
+
 USER root
 RUN mkdir -p /tmp/screenshots/; \
     chown winer:winer /tmp/screenshots/; \
