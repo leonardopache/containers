@@ -40,6 +40,6 @@ only works with:
 - configure Algo trading and dll -- keep mt5 open
 - run python App
 - cd ~/git/algo-trade/
-- wine64 $PY_HOME/Python39/Scripts/pip3.exe install --no-warn-script-location -r ~/git/algo-trade/knights-zodiac/requirements.txt
-- wine64 $PY_HOME/Python39/python.exe ~/git/algo-trade/knights-zodiac/main.py
+- wine $PY_HOME/Python39/Scripts/pip3.exe install --no-warn-script-location -r ~/git/algo-trade/knights-zodiac/requirements.txt
+- wine $PY_HOME/Python39/python.exe ~/git/algo-trade/knights-zodiac/main.py
 
