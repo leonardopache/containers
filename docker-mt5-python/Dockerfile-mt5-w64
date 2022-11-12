@@ -33,12 +33,12 @@ RUN set -ex; \
 # Install Gecko and Mono
 RUN apt-get update -y && \
     apt-get install -y wget && \
-    mkdir -p /usr/share/wine/gecko && \
-    wget "http://dl.winehq.org/wine/wine-gecko/${WINE_GECKO_VERSION}/wine_gecko-${WINE_GECKO_VERSION}-x86_64.msi" -O /usr/share/wine/gecko/wine_gecko-${WINE_GECKO_VERSION}-x86_64.msi && \
-    chmod +x /usr/share/wine/gecko/wine_gecko-${WINE_GECKO_VERSION}-x86_64.msi && \
-    mkdir -p /usr/share/wine/mono && \
-    wget "http://dl.winehq.org/wine/wine-mono/${WINE_MONO_VERSION}/wine-mono-${WINE_MONO_VERSION}-x86.msi" -O /usr/share/wine/mono/wine-mono-${WINE_MONO_VERSION}-x86.msi && \
-    chmod +x /usr/share/wine/mono/wine-mono-${WINE_MONO_VERSION}-x86.msi 
+    mkdir -p /tmp/gecko && \
+    wget "http://dl.winehq.org/wine/wine-gecko/${WINE_GECKO_VERSION}/wine_gecko-${WINE_GECKO_VERSION}-x86_64.msi" -O /tmp/gecko/wine_gecko-${WINE_GECKO_VERSION}-x86_64.msi && \
+    chmod +x /tmp/gecko/wine_gecko-${WINE_GECKO_VERSION}-x86_64.msi && \
+    mkdir -p /tmp/mono && \
+    wget "http://dl.winehq.org/wine/wine-mono/${WINE_MONO_VERSION}/wine-mono-${WINE_MONO_VERSION}-x86.msi" -O /tmp/mono/wine-mono-${WINE_MONO_VERSION}-x86.msi && \
+    chmod +x /tmp/mono/wine-mono-${WINE_MONO_VERSION}-x86.msi 
 
 # Install wine
 RUN set -ex; \
@@ -47,7 +47,7 @@ RUN set -ex; \
     apt-add-repository https://dl.winehq.org/wine-builds/ubuntu/; \
     DEBIAN_FRONTEND=noninteractive apt-get update -y; \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --install-recommends \
-    winehq-staging; \
+    winehq-stable; \
     rm winehq.key
 
 # Install winetricks
@@ -65,6 +65,7 @@ COPY waitonprocess.sh \
     run_mt5.sh \
     run_vnc.sh \
     run_xvfb.sh \
+    init-container.sh \
     wine-init.sh \
     /docker/
 
@@ -75,12 +76,13 @@ RUN set -e; \
     /docker/run_mt5.sh \
     /docker/run_vnc.sh \
     /docker/run_xvfb.sh \
+    /docker/init-container.sh \
     /docker/wine-init.sh;
 
 #Create user and set group
 ARG USER=winer
 ARG HOME=/home/$USER
-ARG USER_ID=501
+ARG USER_ID=1000
 ENV USER=$USER \
     HOME=$HOME
 
@@ -101,7 +103,7 @@ ENV PY_HOME=$HOME/.wine/drive_c/users/winer/AppData/Local/Programs/Python
 
 USER $USER
 RUN set -ex; \
-    wine64 wineboot --init; \
+    wine wineboot --init; \
     xvfb-run sh /docker/wine-init.sh;
 
 RUN set -ex; \
@@ -109,15 +111,15 @@ RUN set -ex; \
     /docker/waitonprocess.sh wineserver;
 
 RUN set -ex; \
-    xvfb-run wine64 /tmp/python-3.9.9-amd64.exe /q;\
+    xvfb-run -a wine /tmp/python-3.9.9-amd64.exe /q;\
     /docker/waitonprocess.sh wineserver;
 
 RUN set -ex; \
-    xvfb-run wine64 msiexec /i /usr/share/wine/gecko/wine_gecko-${WINE_GECKO_VERSION}-x86_64.msi \
+    xvfb-run -a wine msiexec /i /tmp/gecko/wine_gecko-${WINE_GECKO_VERSION}-x86_64.msi \
     /docker/waitonprocess.sh wineserver;
 
 RUN set -ex; \
-    xvfb-run wine64 msiexec /i /usr/share/wine/mono/wine-mono-${WINE_MONO_VERSION}-x86.msi  \
+    xvfb-run -a wine msiexec /i /tmp/mono/wine-mono-${WINE_MONO_VERSION}-x86.msi  \
     /docker/waitonprocess.sh wineserver;
 
 USER root
@@ -125,10 +127,10 @@ RUN mkdir -p /tmp/screenshots/; \
     chown winer:winer /tmp/screenshots/; \
     mkdir -p $HOME/git/algo-trade/; \
     chown -R winer:winer $HOME/git/;
-    
+
 USER $USER
 WORKDIR $MT5DIR
 VOLUME /tmp/screenshots/
 
 ENTRYPOINT ["/bin/bash"]
-#CMD ["/docker/run_mt5.sh"]
+CMD ["/docker/init-container.sh"]

@@ -13,3 +13,4 @@ Xvfb $DISPLAY -screen $SCREEN_NUM $SCREEN_WHD \
     &> /tmp/xvfb.log &
 
 XVFB_PID=$!
+/docker/waitonprocess.sh Xvfb
