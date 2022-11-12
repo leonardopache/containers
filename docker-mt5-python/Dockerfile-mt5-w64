@@ -133,4 +133,4 @@ WORKDIR $MT5DIR
 VOLUME /tmp/screenshots/
 
 ENTRYPOINT ["/bin/bash"]
-CMD ["/docker/init-container.sh"]
+# CMD ["/docker/init-container.sh"]
