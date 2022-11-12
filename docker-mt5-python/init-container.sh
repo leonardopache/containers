@@ -7,8 +7,11 @@
 set -e
 
 /docker/run_xvfb.sh &
+XVFB_PID=$!
 /docker/run_mt5.sh &
+MT5_PID=$!
 /docker/run_vnc.sh &
+VNC_PID=$!
 
 # Wait end of all wine processes
-/docker/waitonprocess.sh wineserver
+# /docker/waitonprocess.sh wineserver
