@@ -19,19 +19,17 @@ mt5.initialize(login=int(''),
 
 
 ###################################
-V1.0
-- Wine7(win10) + Xserver + VNC  + MT5
-- docker start -ai <CONTAINNERID>
+V.latest - Wine7(win10) + Xserver + VNC  + MT5 + Python
 
-###################################
-V1.3
-- Wine7(win10) + Xserver + VNC  + MT5 + Python
 
-###################################
-Vlatest
 - docker build -f Dockerfile-mt5-w64 -t mt5/ubuntuwine:2.0 .
-- docker run -it --env-file=.env -v /tmp/screens:/tmp/screenshots -v /Volumes/lpache/MetaTrader5:/home/winer/.wine/drive_c/users/winer/AppData/Local/Programs/mt5 -v /Volumes/lpache/git/algo-trading:/home/winer/git/algo-trade -p 5901:5900 mt5/ubuntuwine:2.0
-- docker exec -it <CONTAINNERID>  /docker/run_vnc.sh
+- docker run -it --env-file=.env  \
+  -v /tmp/screens:/tmp/screenshots \
+  -v /Volumes/lpache/MetaTrader5:/home/winer/.wine/drive_c/users/winer/AppData/Local/Programs/mt5 \
+  -v /Volumes/lpache/git/algo-trading:/home/winer/git/algo-trade \
+  -p 5901:5900 \
+  mt5/ubuntuwine:2.0
+- ~~ docker exec -it <CONTAINNERID>  /docker/run_vnc.sh ~~ (no needed with init-container.sh)
 
 only works with:
 
