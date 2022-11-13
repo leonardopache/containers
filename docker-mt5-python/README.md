@@ -1,6 +1,6 @@
 # Headless MetaTrader5 + Python + Wine (WIP)
 
-The goal of this image is create an enviroment where is possible to run python application with MT5 in Linux container. 
+The goal of this image is create an environment where is possible to run python application with MT5 in Linux container. 
 Detail of the image:
 - Docker container with Ubuntu 18.04
 - Wine 7.x
