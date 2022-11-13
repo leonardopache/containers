@@ -21,21 +21,23 @@ mt5.initialize(login=int(''),
 ###################################
 V.latest - Wine7(win10) + Xserver + VNC  + MT5 + Python
 
-
 - docker build -f Dockerfile-mt5-w64 -t mt5/ubuntuwine:2.0 .
 - docker run -it --env-file=.env  \
-  -v /tmp/screens:/tmp/screenshots \
-  -v /Volumes/lpache/MetaTrader5:/home/winer/.wine/drive_c/users/winer/AppData/Local/Programs/mt5 \
-  -v /Volumes/lpache/git/algo-trading:/home/winer/git/algo-trade \
+  -v [host]/screens:/tmp/screenshots \
+  -v [host]/MetaTrader5:/home/winer/.wine/drive_c/users/winer/AppData/Local/Programs/mt5 \
+  -v [host]/algo-trading:/home/winer/git/algo-trade \
   -p 5901:5900 \
   mt5/ubuntuwine:2.0
-- ~~ docker exec -it <CONTAINNERID>  /docker/run_vnc.sh ~~ (no needed with init-container.sh)
-
-only works with:
-
-- open MT5 before run python
-- docker exec -it <CONTAINNERID> /docker/run_mt5.sh
-- configure Algo trading and dll -- keep mt5 open
+  
+// After run:
+- start Xserver and vnc 
+  `docker exec -it <CONTAINNERID>  /docker/run_xvfb.sh`
+  `docker exec -it <CONTAINNERID>  /docker/run_vnc.sh`
+  
+Manual work before run app:
+- validate user group permission for mt5 folder
+- open MT5 before run python  `docker exec -it <CONTAINNERID> /docker/run_mt5.sh`
+- configure Algo trading and dll -- keep mt5 open if code doesn't do
 - run python App
 - cd ~/git/algo-trade/
 - wine $PY_HOME/Python39/Scripts/pip3.exe install --no-warn-script-location -r ~/git/algo-trade/knights-zodiac/requirements.txt
